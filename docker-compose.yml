@@ -1,0 +1,36 @@
+﻿services:
+  
+  ms-sqlserver:
+    container_name: ms-sqlserver
+    image: "mcr.microsoft.com/mssql/server:2019-latest"
+    volumes:
+      - ms-sqlserver-edge-data:/var/opt/mssql
+    networks:
+      - inlamning-net
+    env_file:
+      - .env
+    ports:
+      - 1433:1433
+#    environment:
+#        - ACCEPT_EULA=Y
+#        - MSSQL_SA_PASSWORD=${PWD}
+  
+  web_api:
+    container_name: web_api
+#    image: ${DOCKER_REGISTRY-}webapisqlserverdockerdemo
+    ports:
+      - 5136:80
+    networks:
+      - inlamning-net
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - ms-sqlserver
+    
+volumes:
+  ms-sqlserver-edge-data:
+
+networks:
+  inlamning-net:
+    driver: bridge
